@@ -1,0 +1,261 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Tareas</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      html {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+        letter-spacing: 1px;
+        background-image: linear-gradient(
+          to right top,
+          #d16ba5,
+          #c777b9,
+          #ba83ca,
+          #aa8fd8,
+          #9a9ae1,
+          #7d99da,
+          #6296cf,
+          #4b93c2,
+          #2482a2,
+          #007082,
+          #005d62,
+          #054a45
+        );
+      }
+
+      .cuadro {
+        width: 600px;
+        margin: auto;
+        margin-top: 4vh;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px;
+        border-radius: 8px;
+        border: 1px solid white;
+        box-shadow: 8px 11px 20px -2px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        color: #09627a;
+        font-size: 1.2rem;
+        text-justify: center;
+      }
+
+      .inputTarea {
+        width: 80%;
+        height: 100%;
+        border-radius: 7px;
+        background-color: rgba(56, 52, 52, 0.2);
+        border: 2px solid #09627a;
+      }
+
+      form {
+        border: 1px solid rgb(163, 153, 153);
+        width: 100%;
+        height: 50%;
+        border-radius: 7px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+      }
+
+      #botonAgregar {
+        width: 20%;
+        height: 90%;
+        border-radius: 5px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #a4c2c4;
+        margin-left: 0;
+      }
+
+      form * {
+        padding: 10px;
+        margin: 10px;
+      }
+      .tarea {
+        background: gray;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        border-radius: 5px;
+        margin-top: 5px;
+        align-items: center;
+      }
+      .tarea * {
+        border-radius: 5px;
+        margin: 5px;
+      }
+      textarea:focus,
+      input:focus {
+        outline: none;
+      }
+      .check {
+        cursor: pointer;
+        background-color: #fff;
+
+        width: 30px;
+        height: 30px;
+
+        border: 2px solid #09627a;
+      }
+    </style>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      function TaskList({ tasks, handleCompleteTask, handleDeleteTask }) {
+        return (
+          <div>
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                handleCompleteTask={handleCompleteTask}
+                handleDeleteTask={handleDeleteTask}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      function TaskItem({ task, handleCompleteTask, handleDeleteTask }) {
+        const [completed, setCompleted] = useState(task.completed);
+
+        const handleComplete = () => {
+          setCompleted(!completed);
+          handleCompleteTask(task.id);
+        };
+
+        const handleDelete = () => {
+          handleDeleteTask(task.id);
+        };
+
+        return (
+          <div
+            className="tarea"
+            style={{ textDecoration: completed ? "line-through" : "none" }}
+          >
+            <input
+              className="check"
+              type="checkbox"
+              checked={completed}
+              onChange={handleComplete}
+            />
+            <span style={completed ? { color: "red" } : { color: "white" }}>
+              {task.name}
+            </span>
+            <button onClick={handleDelete}>
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        );
+      }
+
+      function TaskForm({ handleAddTask }) {
+        const [taskName, setTaskName] = useState("");
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          handleAddTask(taskName);
+          setTaskName("");
+        };
+
+        return (
+          <form onSubmit={handleSubmit}>
+            <input
+              className="inputTarea"
+              maxLength={45}
+              type="text"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+            />
+            <button type="submit" id="botonAgregar">
+              Agregar
+            </button>
+          </form>
+        );
+      }
+
+      function App() {
+        const [tasks, setTasks] = useState([]);
+
+        // Fetch tasks from localStorage on initial render
+        useEffect(() => {
+          const tasksFromStorage = localStorage.getItem("tasks");
+          if (tasksFromStorage) {
+            setTasks(JSON.parse(tasksFromStorage));
+          }
+        }, []);
+
+        // Persist tasks to localStorage on task updates
+        useEffect(() => {
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+        }, [tasks]);
+
+        const handleAddTask = (name) => {
+          const newTask = {
+            id: Date.now(),
+            name,
+            completed: false,
+          };
+          setTasks([...tasks, newTask]);
+        };
+
+        const handleCompleteTask = (id) => {
+          const updatedTasks = tasks.map((task) => {
+            if (task.id === id) {
+              return { ...task, completed: true };
+            }
+            return task;
+          });
+          setTasks(updatedTasks);
+        };
+
+        const handleDeleteTask = (id) => {
+          const updatedTasks = tasks.filter((task) => task.id !== id);
+          setTasks(updatedTasks);
+        };
+
+        return (
+          <div className="cuadro">
+            <h1>LISTA DE TAREAS</h1>
+            <TaskForm handleAddTask={handleAddTask} />
+            <TaskList
+              tasks={tasks}
+              handleCompleteTask={handleCompleteTask}
+              handleDeleteTask={handleDeleteTask}
+            />
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
