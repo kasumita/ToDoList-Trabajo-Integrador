@@ -94,6 +94,7 @@
         padding: 10px;
         margin: 10px;
       }
+
       .tarea {
         background: gray;
         display: flex;
@@ -103,14 +104,17 @@
         margin-top: 5px;
         align-items: center;
       }
+
       .tarea * {
         border-radius: 5px;
         margin: 5px;
       }
+
       textarea:focus,
       input:focus {
         outline: none;
       }
+
       .check {
         cursor: pointer;
         background-color: #fff;
@@ -120,12 +124,13 @@
 
         border: 2px solid #09627a;
       }
+
     </style>
 
     <script type="text/babel">
       const { useState, useEffect } = React;
 
-      
+
       // Esta función renderiza una lista de elementos de tareas
       function TaskList({ tasks, handleCompleteTask, handleDeleteTask }) {
         return (
@@ -146,11 +151,13 @@
       // Esta función renderiza un elemento de tarea individual
       function TaskItem({ task, handleCompleteTask, handleDeleteTask }) {
         const [completed, setCompleted] = useState(task.completed);
+
         // Función para manejar clics en la casilla de verificación de finalización
         const handleComplete = () => {
           setCompleted(!completed);
           handleCompleteTask(task.id);
         };
+
         // Función para manejar clics en el botón de eliminación
         const handleDelete = () => {
           handleDeleteTask(task.id);
@@ -168,7 +175,6 @@
               checked={completed} // Estado inicial de la casilla de verificación según el estado de finalización
               onChange={handleComplete} // Maneja el cambio de estado de la casilla de verificación
             />
-
             <span // Aplica color rojo al nombre de la tarea si está completada
               style={completed ? { color: "red" } : { color: "white" }}
             >
@@ -186,6 +192,7 @@
       // Esta función renderiza el formulario para agregar nuevas tareas
       function TaskForm({ handleAddTask }) {
         const [taskName, setTaskName] = useState("");
+
         // Función para manejar el envío del formulario
         const handleSubmit = (e) => {
           e.preventDefault(); // Evita la acción predeterminada del formulario
@@ -210,6 +217,7 @@
         );
       }
 
+
       // Esta función representa la aplicación principal y gestiona el estado y las funciones de la lista de tareas
       function App() {
         const [tasks, setTasks] = useState([]);
@@ -226,6 +234,7 @@
         useEffect(() => {
           localStorage.setItem("tasks", JSON.stringify(tasks));
         }, [tasks]);
+        
         // Funciones para manejar la adición, finalización y eliminación de tareas
         const handleAddTask = (name) => {
           const newTask = {
