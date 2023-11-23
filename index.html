@@ -125,29 +125,33 @@
     <script type="text/babel">
       const { useState, useEffect } = React;
 
+      
+      // Esta función renderiza una lista de elementos de tareas
       function TaskList({ tasks, handleCompleteTask, handleDeleteTask }) {
         return (
           <div>
             {tasks.map((task) => (
               <TaskItem
-                key={task.id}
-                task={task}
-                handleCompleteTask={handleCompleteTask}
-                handleDeleteTask={handleDeleteTask}
+                key={task.id} // Establece una clave única para cada elemento
+                task={task} // Pasa el objeto de tarea al componente TaskItem
+                handleCompleteTask={handleCompleteTask} // Pasa la función de manejo de finalización de tarea
+                handleDeleteTask={handleDeleteTask} // Pasa la función de manejo de eliminación de tarea
               />
             ))}
           </div>
         );
       }
 
+
+      // Esta función renderiza un elemento de tarea individual
       function TaskItem({ task, handleCompleteTask, handleDeleteTask }) {
         const [completed, setCompleted] = useState(task.completed);
-
+        // Función para manejar clics en la casilla de verificación de finalización
         const handleComplete = () => {
           setCompleted(!completed);
           handleCompleteTask(task.id);
         };
-
+        // Función para manejar clics en el botón de eliminación
         const handleDelete = () => {
           handleDeleteTask(task.id);
         };
@@ -155,31 +159,38 @@
         return (
           <div
             className="tarea"
+            // Aplica tachado al nombre de la tarea si está completada
             style={{ textDecoration: completed ? "line-through" : "none" }}
           >
             <input
               className="check"
               type="checkbox"
-              checked={completed}
-              onChange={handleComplete}
+              checked={completed} // Estado inicial de la casilla de verificación según el estado de finalización
+              onChange={handleComplete} // Maneja el cambio de estado de la casilla de verificación
             />
-            <span style={completed ? { color: "red" } : { color: "white" }}>
+
+            <span // Aplica color rojo al nombre de la tarea si está completada
+              style={completed ? { color: "red" } : { color: "white" }}
+            >
               {task.name}
             </span>
             <button onClick={handleDelete}>
+              {/* Botón de eliminación con ícono de basura */}
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
         );
       }
 
+
+      // Esta función renderiza el formulario para agregar nuevas tareas
       function TaskForm({ handleAddTask }) {
         const [taskName, setTaskName] = useState("");
-
+        // Función para manejar el envío del formulario
         const handleSubmit = (e) => {
-          e.preventDefault();
-          handleAddTask(taskName);
-          setTaskName("");
+          e.preventDefault(); // Evita la acción predeterminada del formulario
+          handleAddTask(taskName); // Llama a la función de manejo de adición de tarea, pasando el nombre de la tarea
+          setTaskName(""); // Limpia el campo de entrada de nombre de tarea
         };
 
         return (
@@ -189,31 +200,33 @@
               maxLength={45}
               type="text"
               value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
+              onChange={(e) => setTaskName(e.target.value)} // Maneja el cambio de valor del campo de entrada
             />
             <button type="submit" id="botonAgregar">
+              {/* Botón de envío de formulario para agregar la tarea */}
               Agregar
             </button>
           </form>
         );
       }
 
+      // Esta función representa la aplicación principal y gestiona el estado y las funciones de la lista de tareas
       function App() {
         const [tasks, setTasks] = useState([]);
 
-        // Fetch tasks from localStorage on initial render
+        // Función para cargar las tareas guardadas en localStorage al iniciar la aplicación
         useEffect(() => {
           const tasksFromStorage = localStorage.getItem("tasks");
           if (tasksFromStorage) {
-            setTasks(JSON.parse(tasksFromStorage));
+            setTasks(JSON.parse(tasksFromStorage)); // Carga las tareas del almacenamiento local
           }
         }, []);
 
-        // Persist tasks to localStorage on task updates
+        // Función para guardar las tareas en localStorage al actualizar la lista de tareas
         useEffect(() => {
           localStorage.setItem("tasks", JSON.stringify(tasks));
         }, [tasks]);
-
+        // Funciones para manejar la adición, finalización y eliminación de tareas
         const handleAddTask = (name) => {
           const newTask = {
             id: Date.now(),
