@@ -152,13 +152,13 @@
       function TaskItem({ task, handleCompleteTask, handleDeleteTask }) {
         const [completed, setCompleted] = useState(task.completed);
 
-        // Función para manejar clics en la casilla de verificación de finalización
+        // Función para manejar clicks en la casilla de verificación de finalización
         const handleComplete = () => {
           setCompleted(!completed);
           handleCompleteTask(task.id);
         };
 
-        // Función para manejar clics en el botón de eliminación
+        // Función para manejar clicks en el botón de eliminación
         const handleDelete = () => {
           handleDeleteTask(task.id);
         };
@@ -181,7 +181,6 @@
               {task.name}
             </span>
             <button onClick={handleDelete}>
-              {/* Botón de eliminación con ícono de basura */}
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -230,12 +229,12 @@
           }
         }, []);
 
-        // Función para guardar las tareas en localStorage al actualizar la lista de tareas
+        // Función para guardar las tareas en el localStorage al actualizar la lista de tareas
         useEffect(() => {
           localStorage.setItem("tasks", JSON.stringify(tasks));
         }, [tasks]);
-        
-        // Funciones para manejar la adición, finalización y eliminación de tareas
+
+        // Funciones para agregar, completar o eliminar tareas
         const handleAddTask = (name) => {
           const newTask = {
             id: Date.now(),
